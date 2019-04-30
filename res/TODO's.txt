@@ -1,0 +1,162 @@
+Model:
+- Need to make a graph implementation which is undirected
+- Needs to update the targets and sources get methods
+- UPdate Prodcessor -> done method so that we dont need to invoke later on the send end call
+
+
+UpdatingSearchs
+- Update contract to include sending the path to target in the final updateMessage
+- Optimize algorithm execution - is reaching limit now
+
+
+SAVView:
+- Set speeds max and mins
+
+Controls panel:
+- Add instructions button DONE
+
+
+SAVController:
+- Set speed from slider
+- Start button repsonse
+- Clear button functionality
+- bug stopping initial setting of source DONE 
+
+General:
+- Functionality to share selected algorithm between model and view
+- Functionality to start and stop algorithm execution
+- Functionality to change algorithm speed mid execution (maybe)
+
+
+TESTS:
+ - tests that block/unblock remove from graph correctly
+
+Algorithms to implement:
+- A* search mono
+- A* Search with relaxed heuristic function
+- Depth First Search
+- BreadthFirstSearch
+
+
+Trial Changes:
+- getColourfrom distance 3
+- Changd gridposition distances to be doubles
+- changed distances to be 100, 141, to account for diag vs straight diffs
+
+Optimization:
+1. Algorithm speed
+2. Graphics draw speed
+	SPecifically, update getDrawnRectangle to not create the buffered image every single time,
+
+
+Notes:
+02.04.2019
+- Added stopRUnning functionality to searchEnded wihtout update
+- Bug: overwriting source with blocked does not update source DONE
+- Bug: consecutive searches dont work
+	-Actually caused by the update max distance call being made, but the respective update not being completed before the updater finishes
+	- Updater finishes and 
+	- Tried a whole bunch of stuff
+		- publish functionality from runner worker
+		- full call track from runner through to colourcontroller with seperate calls to resume
+	- next step =  change runner off EDT, so that pausing can pause the updater successfully
+	- next step, clean up back to working but buggy, branch, completely redo concurrency functionality
+	
+
+- fixed bug in Graph where removing vertex did not remove vertex from VLMap
+
+
+05.04.2019:
+- Fixed bug which caused updates to continue being processed after pause called and finish of runsearchalgo worker 
+	-Pause and resume were being called with correct timing on EDT, but repaint was not called until a change was made (which occured on next event from updater)
+	- Result was that on first update after maxDistance update, every position attempted to update sequentually 
+	- MAYBE this is because each position has not actually changed from Swing perspective. updateDistances changes the actual referenced image from the unblocked imageIcon to the unblockedColoured imageIcon, 
+	-Whereas updateAllGridColours only changes the colours of the unblocked squares, but doesn't change them to a new imageIcon??
+	- Don't really believe this, but root cause was defintely that for some reason the done() call in the runSearchAlgorithm thread DID update all grid colours, but DID NOT call repaint() on the panel for some reason?
+- Fixed bug in updateProcessor (brought in as a result of trying to correct above bug)
+	-Short pathes would not update before entire run was finished, causing everything to be set red, and the animation to never run
+	- also caused by incorrect setting of default gridPosition default values to 0 instead of MAX_VALUE => 0 values drawn as max Red
+
+- Fixed bug in colourController which caused some distance calc to return greater than allowable weightingss(51 instead of 50)
+	- Caused because default max distance = 15000, which is much smaller than distances than can be seen in very labyrinthine traversals 
+	- No way around this to be thought of currently, if I set default as higher, short pathes look bad, if set lower long pathes look poor until distance is updated. 
+	- Options:
+	1. dynamically udpate max distance if a call to getMaxDistanceWeight has a higher distance than the maxDistance currently set (risks obscuring bugs)
+	2. Stepwise increment of MaxDistance => if distance>maxdistance in getMaxDistanceWeight, update MD to secondary, larger default
+	- Temporarily adjusted all MD weights to 50 if>15000 for now. This bug only causes errors in time between when distance hits >15000 on a square and before the SA finishes 
+
+06.04.2019
+- Added new pause flag in updater for pause button press so that pause from updater and pause button do not interfere
+- removed reference to updater and to pause button calls in runSearchAlgorithm
+- Stop button changed to pause and resume button
+	- Text to change when pause is pressed (pause->resume->pause)
+- Forked repo to add LayeredPane for path drawing
+
+Layerd pane usage:
+- create GridPanel as a layered pane
+- create path line:
+	-Set depth as +1 from GridPositions
+	Methods:
+	- Draw line between posn (gridPosn, gridPosn)
+		draws a line between the center of the gridPosns
+		
+	- disposePath
+- Overlay layout, with holding panel holding the grid and the path panel
+- Need the path panel to have the mouselistener as a listener, so that it doesn;t get overwritten everytime a mouse entered event occurs
+- need someway of getting this reference to the path panel
+
+
+07.04.2019 
+- Set pathpael to transparent
+Panel dev:
+- polish drawLine and drawLinkGraphics methods
+- Set up piecemeal path drawing
+NEXTSTEP
+- Disable controls during path draw
+
+-BUG -> tareget, then source, then setting source elsewhere leaves target set
+BUG -  start button randomness in top corner after path drawn finished -> caused by path draw called on worker thread, not on EDT
+	WORKER THREADS ARE NOT ON EDT. DONE CALL IS ON EDT. FOR now, have added invokeLater to searchended methods, could push to done method later better practice
+
+09.04.2019:
+-Began implementation of factory methods
+- Aded set pause button/set reusme button methods
+- Created pauseFactory, and implemented it by:
+	- setting required dependecies by constructor injection
+	- loading the state controller with the controls panel (need bettewr way to do this)
+	- calling getINstance wherever the pause controller is needed
+
+
+10.04.2019
+- began port of start functionlaity to start controller
+	
+- fixed functinality to allow searching with no target
+
+-TODO allow search to finish without actually reaching target
+	-need to push distance to path
+
+in Djirskas search:
+- now create a path regardless of whether target is found, cannot use null reference on end update to check if the path is compplete. This needs to be moved to the grid, where we can 
+check if the last node in the path equals the target. if not, handle no target found (likely a recolour of the path?)
+- fixed bug where if path was not found, it would try to send a path to the curren searched node, which was not linked to the source. Now will send the last searched node
+(stores reference of last search node for each loop of a pQ read)
+
+12.04.2019
+- Created factory for SAVController
+- Created factory for ClearController
+- coded clear controller
+
+for refactor:
+- Map each class and its methods to other classes
+	- split class functionality to be SRP
+	- Clear up responsbiliites between GridPanel, grid, View and Colour Controller
+
+
+13.04.2019 
+- Button visual disable functionality
+-BUG if source is set with no target, path does not get drawn - bug in DJirskas most likekly
+- fixed, Djirskas search did not create a path to the target if it finished the entire graph without hitting a non-visited node. Just ended
+
+28.04.2019 
+- BUG Pause is breifly pressable during the transiton from end of path draw to re-start state. Need to make unclickable
+- BUG pausing before max distance updated causes max distance to not push correctly -> need to check how max Dis pushes handled when paused
