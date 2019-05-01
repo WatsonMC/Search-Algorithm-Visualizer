@@ -11,8 +11,8 @@ The algorithm will then search then graph, and push updates the the view, which 
 it's approximate closeness to the target (or simply distance from source if no target shown). When the algorithm finishes, it will draw 
 node-and-line path from the source to the end point - either the target or the furthest possible distance travelled:
 
-![](images/sav1.png)
-![](images/sav2.png)
+![](images/SAV1.PNG)
+![](images/SAV2.PNG)
 
 Dependencies:
 
