@@ -48,10 +48,9 @@ public class ColourController {
 	 */
 	
 	// Image icons
-	private  ImageIcon SOURCE_ICON;
-	private  ImageIcon TARGET_ICON;
-	private  ImageIcon DEFAULT;
-	private  ImageIcon BLOCKED_ICON;
+	private  Image SOURCE_ICON;
+	private  Image TARGET_ICON;
+	private  Image BLOCKED_ICON;
 	
 	// GridPanel dependency
 	private GridPanel grid;
@@ -59,6 +58,10 @@ public class ColourController {
 	//Max distance values used in colour calculations
 	private int maxDistance;
 	public static final int DEFAULT_MD = 15000;
+	
+	//Default colour for grid position
+	public static final Color DEFAULT_COLOUR = Color.LIGHT_GRAY;
+	public static Image DEFAULT_IMAGE = null;
 	
 	/**
 	 * COnstructor for colour controller from grid dependency injection
@@ -76,14 +79,9 @@ public class ColourController {
 	}
 	
 	public void initImageIcons() throws IOException{
-		Image source = ImageIO.read(getClass().getResource("/source.png"));
-		Image target = ImageIO.read(getClass().getResource("/target.png"));
-		Image block = ImageIO.read(getClass().getResource("/block.png"));
-		Image blocked = ImageIO.read(getClass().getResource("/blocked.png"));
-		this.SOURCE_ICON = getScaledImage(source, GridPanel.DEFAULT_SIZE.width, GridPanel.DEFAULT_SIZE.height); 
-		this.TARGET_ICON = getScaledImage(target, GridPanel.DEFAULT_SIZE.width, GridPanel.DEFAULT_SIZE.height); 
-		this.DEFAULT = getScaledImage(block, GridPanel.DEFAULT_SIZE.width, GridPanel.DEFAULT_SIZE.height); 
-		this.BLOCKED_ICON = getScaledImage(blocked, GridPanel.DEFAULT_SIZE.width, GridPanel.DEFAULT_SIZE.height);
+		SOURCE_ICON = getScaledImage(ImageIO.read(getClass().getResource("/source.png")),GridPanel.DEFAULT_SIZE.width, GridPanel.DEFAULT_SIZE.height);
+		TARGET_ICON = getScaledImage(ImageIO.read(getClass().getResource("/target.png")),GridPanel.DEFAULT_SIZE.width, GridPanel.DEFAULT_SIZE.height);
+		BLOCKED_ICON = getScaledImage(ImageIO.read(getClass().getResource("/blocked.png")),GridPanel.DEFAULT_SIZE.width, GridPanel.DEFAULT_SIZE.height);
 		maxDistance =DEFAULT_MD;
 	}
 	
@@ -115,30 +113,28 @@ public class ColourController {
 	
 	// Method to set the posn with the target image icon
 	public void drawTarget(GridPosition posn) {
-		posn.setIcon(TARGET_ICON);
+		posn.setImage(TARGET_ICON);
 	}
 	
 	//method to set the posn with the source imageicon
 	public void drawSource(GridPosition posn) {
-		posn.setIcon(SOURCE_ICON);
+		posn.setImage(SOURCE_ICON);
 	}
 	
 	//method to set the posn with the blocked colour
 	public void drawBlocked(GridPosition posn) {
-		posn.setIcon(BLOCKED_ICON);
+		posn.setImage(BLOCKED_ICON);
 	}
 	
 	//method to determine colour and set for an unblocked posn
 	public void drawUnblocked(GridPosition posn, boolean showDistance) {
-		if(!showDistance) {posn.setIcon(DEFAULT);}
+		if(!showDistance) {posn.setColour(DEFAULT_COLOUR);}
 		else if (posn.getDistance() != Integer.MAX_VALUE){	// max value is the indicator of not yet visited
-			posn.setIcon(getDrawnRectangle(
-					DistanceColourCalculator.getDistanceColour(
+			posn.setColour(DistanceColourCalculator.getDistanceColour(
 							grid.getSource(),
 							grid.getTarget(),
-							posn,this.maxDistance),
-					GridPanel.DEFAULT_SIZE.width, 
-					GridPanel.DEFAULT_SIZE.height));
+							posn,this.maxDistance));
+				
 		}
 		//TODO if leaving unvisited notes light grey doesn't look good, set to black or something
 	}
@@ -267,7 +263,7 @@ public class ColourController {
 	
 	// from: https://stackoverflow.com/questions/6714045/how-to-resize-jlabel-imageicon
 	//TODO workout how the fuck this works
-	private ImageIcon getScaledImage(Image srcImg, int w, int h){
+	private ImageIcon getScaledImageIcon(Image srcImg, int w, int h){
 	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 	    Graphics2D g2 = resizedImg.createGraphics();
 
@@ -276,6 +272,17 @@ public class ColourController {
 	    g2.dispose();
 
 	    return new ImageIcon(resizedImg);
+	}
+	
+	private Image getScaledImage(Image srcImg, int w, int h) {
+		BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+	    Graphics2D g2 = resizedImg.createGraphics();
+
+	    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+	    g2.drawImage(srcImg, 0, 0, w, h, null);
+	    g2.dispose();
+
+	    return resizedImg;
 	}
 	
 	/**
@@ -304,7 +311,7 @@ public class ColourController {
 	}
 	
 	//TEST GETTERS:
-	public ImageIcon getIcon(int state) {
+	public Image getIcon(int state) {
 		if(state == GridPanel.BLOCKED) {
 			return this.BLOCKED_ICON;
 		}
@@ -313,9 +320,6 @@ public class ColourController {
 		}
 		if(state == GridPanel.TARGET) {
 			return this.TARGET_ICON;
-		}
-		if(state == GridPanel.UNBLOCKED) {
-			return this.DEFAULT;
 		}
 		return null;
 	}

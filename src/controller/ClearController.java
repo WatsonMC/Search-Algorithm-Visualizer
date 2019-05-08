@@ -62,6 +62,7 @@ public class ClearController implements ActionListener{
 			model.resetModel();
 			view.clearBoard();
 			stateController.setState(StateController.PRE_SEARCH);
+			view.requestGridFocus();
 			return;
 		}
 		System.out.println("Clear button pressed while disabled");

@@ -180,4 +180,8 @@ public class SAVView{
 			grid.resetForNextSearch();
 		}
 	}
+
+	public void requestGridFocus() {
+		grid.requestFocus();
+	}
 }

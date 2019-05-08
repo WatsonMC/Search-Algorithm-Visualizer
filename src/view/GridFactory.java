@@ -25,8 +25,8 @@ public abstract class GridFactory {
 		for(int i = 0; i<width; i++) {
 			for(int j = 0; j<height;j++) {
 				grid[i][j] = new GridPosition(i,j);
-				grid[i][j].setState(posnState);
 				grid[i][j].setPreferredSize(gridSize);
+				grid[i][j].setState(posnState);
 				grid[i][j].setVisible(true);
 				grid[i][j].addMouseListener(controller);
 				grid[i][j].addKeyListener(controller);

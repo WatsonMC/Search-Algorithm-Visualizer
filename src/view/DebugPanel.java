@@ -12,13 +12,12 @@ import java.awt.event.MouseListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import com.sun.xml.internal.ws.addressing.model.ActionNotSupportedException;
+import javax.swing.JTextArea;
 
 
 public class DebugPanel {
 	private JPanel panel;
-	private JLabel currentPosn;
+	private JTextArea currentPosn;
 	private JButton btnTest1;
 	private JButton btnTest2;
 	private JButton btnTest3;
@@ -74,7 +73,7 @@ public class DebugPanel {
 	}
 	
 	public void constructViewPosnValue() {
-		currentPosn = new JLabel("test");
+		currentPosn = new JTextArea("test");
 		currentPosn.setVisible(true);
 		panel.add(currentPosn);
 	}
@@ -150,7 +149,9 @@ class DebugListener implements MouseListener{
 	public void mouseEntered(MouseEvent e) {
 		if(e.getSource() instanceof GridPosition) {
 			GridPosition posn = (GridPosition)e.getSource();
-			debug.setPosnText("Current posn: " + posn.getXCoord() + "," + posn.getYCoord());
+			debug.setPosnText("Current posn: " + posn.x + "," + posn.y+
+					"\n Position state is: " + posn.getState() + 
+					"\n posn colour is: " + posn.getColour().toString());
 		}
 		
 	}

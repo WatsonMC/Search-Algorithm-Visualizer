@@ -1,4 +1,5 @@
 package model;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -106,12 +107,20 @@ public class UpdateProcessor extends SwingWorker<Void,GraphUpdate>{
 	 * @param updatedDistances
 	 */
 	public void updateModel(GraphUpdate update) {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				model.updateDistances(update.getDistances());				
-			}
-		});
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				@Override
+				public void run() {
+					model.updateDistances(update.getDistances());				
+				}
+			});
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void sendEnd(List<String> pathToTarget) {

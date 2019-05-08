@@ -6,7 +6,7 @@ import java.awt.Image;
 
 import javax.swing.JPanel;
 
-public class GridPosition extends JPanel{
+public class GridPositionPanel extends JPanel{
 			
 	/**
 	 * Existing functions of the gridPosition
@@ -41,11 +41,8 @@ public class GridPosition extends JPanel{
 	private Image img = ColourController.DEFAULT_IMAGE; //blocked image
 	
 	//Constructor for the gridposition,
-	public GridPosition(int x, int y) {
-		this.x = x;
-		this.y = y;
-		this.distance = Integer.MAX_VALUE;
-		repaint();
+	public GridPositionPanel(int x, int y) {
+		
 	}
 	
 	//Paints the gridposition with the colour if it is unblocked,
@@ -92,7 +89,7 @@ public class GridPosition extends JPanel{
 	}
 	
 	//getter for distance
-	public int getDistance() {
+	public int getDistance(int distance) {
 		return this.distance;
 	}
 	
@@ -100,10 +97,6 @@ public class GridPosition extends JPanel{
 	public void setColour(Color colour) {
 		this.colour = colour;
 		repaint();
-	}
-	
-	public Color getColour() {
-		return this.colour;
 	}
 	
 	//setter for image

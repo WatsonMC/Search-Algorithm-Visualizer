@@ -114,6 +114,7 @@ public class SAVController implements MouseListener, KeyListener{
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		view.requestGridFocus();
 		if(runState == true|| !gridEnabled) {
 			return;
 		}
