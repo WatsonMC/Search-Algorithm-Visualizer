@@ -35,6 +35,7 @@ public class SAVController implements MouseListener, KeyListener{
 	
 	//controllers
 	private ControlsController controlsController;
+	private AlgorithmSelectionController algo;
 	
 	
 	public SAVController(SAVView view, SAVModel model) {
@@ -218,5 +219,6 @@ public class SAVController implements MouseListener, KeyListener{
 	public void enableGrid() {
 		this.gridEnabled = true;
 	}
+	
 
 }

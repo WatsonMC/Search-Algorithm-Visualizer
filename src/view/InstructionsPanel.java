@@ -3,6 +3,7 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -57,7 +58,7 @@ public class InstructionsPanel extends JPanel{
 		createImageIcons();
 		
 		//create components
-		JButton btnOkay = createOkayButton();
+		//JButton btnOkay = createOkayButton();
 		JPanel controlsInstructionsPanel = createContolsInstructionsPanel();
 		JPanel howItWorksPanel = createHowItWorksPanel();
 		
@@ -67,7 +68,7 @@ public class InstructionsPanel extends JPanel{
 		tabbedPane.addTab("How it works", howItWorksPanel);
 		
 		add(tabbedPane, BorderLayout.CENTER);
-		add(btnOkay,BorderLayout.PAGE_END);
+//		add(btnOkay,BorderLayout.PAGE_END);
 	}
 	
 	private ImageIcon getScaledImage(Image image, int height) {
@@ -322,28 +323,26 @@ public class InstructionsPanel extends JPanel{
 		}
 	}
 
-	private static void createAndShowGUI() {
-		JFrame frame = new JFrame ("Instructions");
-		JDialog dialog = new JDialog(frame);
+	private static void createAndShowGUI(JFrame frame)  {
+		//JFrame frame = new JFrame ("Instructions");
+		JDialog dialog = new JDialog(frame,"Instructions",Dialog.ModalityType.DOCUMENT_MODAL);
 		dialog.setModalityType(ModalityType.APPLICATION_MODAL);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setLocationRelativeTo(null);
-		frame.setAlwaysOnTop(true);
-		frame.setResizable(false);
+//		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dialog.setLocation(0, 0);
+//		frame.setAlwaysOnTop(true);
+//		frame.setResizable(false);
 		InstructionsPanel instructions =  new InstructionsPanel(dialog);
-		
-		frame.setContentPane(instructions);
-		
-		frame.pack();
-		frame.setVisible(true);
+		dialog.setContentPane(instructions);
+		dialog.pack();
+		dialog.setVisible(true);
 	}
 	
-	public static void displayInstructions() {
+	public static void displayInstructions(JFrame frame) {
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			@Override
 			public void run() {
-				createAndShowGUI();		
+				createAndShowGUI(frame);		
 			}
 		});
 		

@@ -21,7 +21,9 @@ import javax.swing.border.Border;
 
 import controller.AlgorithmSelectionController;
 import controller.ControlsController;
+import factories.AlgorithmSelectionControllerFactory;
 import factories.ClearControllerFactory;
+import factories.InstructionsControllerFactory;
 import factories.PauseControllerFactory;
 import factories.SpeedSliderControllerFactory;
 import factories.StartControllerFactory;
@@ -31,7 +33,7 @@ public class ControlsPanel  {
 
 	private static Border INTRO_BORDER = BorderFactory.createCompoundBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED), 
 			BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-	private static Border PANEL_BORDER = BorderFactory.createLineBorder(Color.LIGHT_GRAY,5,false);
+	private static Border PANEL_BORDER = BorderFactory.createLineBorder(Color.WHITE,5,false);
 	private static Font INTRO_FONT = new Font(Font.SANS_SERIF, Font.BOLD, 15);
 	private JPanel controlPanel;
 	private JPanel startStopPanel;	// top panel, start stop and control speed
@@ -167,8 +169,6 @@ public class ControlsPanel  {
 		algorithmSelectionPanel.setLayout(new BorderLayout(0,VGAP));
 		JPanel algoContentPanel = new JPanel();
 		algoContentPanel.setLayout(new BorderLayout());
-		
-		
 		constructAlgorithmText(algoContentPanel);
 		constructSelectAlgorithm(algoContentPanel);
 		constructAlgoPanelIntroText(algorithmSelectionPanel);
@@ -222,12 +222,12 @@ public class ControlsPanel  {
 	//Speed slider constructor ->start stop panel
 	private void constructSpeedSlider(JPanel panel) {
 		JSlider speedSlider = new JSlider();
-		speedSlider.setMajorTickSpacing(4);
-		speedSlider.setMaximum(25);
+		speedSlider.setMajorTickSpacing(5);
+		speedSlider.setMaximum(40);
 		speedSlider.setMinimum(1);
 		speedSlider.setPaintTicks(true);
 		speedSlider.setInverted(true);
-		speedSlider.setValue(10);
+		speedSlider.setValue(20);
 		speedSlider.addChangeListener(SpeedSliderControllerFactory.getInstance()); //Change to SppedController
 		SpeedSliderControllerFactory.getInstance().loadComponent(speedSlider);
 		speedSlider.setBorder(BorderFactory.createTitledBorder("Algorithm Speed"));
@@ -249,14 +249,14 @@ public class ControlsPanel  {
 	//constructor for the selection box
 	private void constructSelectAlgorithm(JPanel panel) {
 		//TODO add this
-		AlgorithmSelectionController algCtrl = controlsController.getAlgorithmSelectionController();
+		AlgorithmSelectionController algCtrl = AlgorithmSelectionControllerFactory.getInstance();
 		JComboBox<String> cmbAlgorithms =  new JComboBox<>(algCtrl.getAlogirthmArray());
 		cmbAlgorithms.addActionListener(algCtrl);
 		panel.add(cmbAlgorithms, BorderLayout.PAGE_START);
 		addComponentToMap(cmbAlgorithms);
-		cmbAlgorithms.setSelectedIndex(0);
 		updateAlgorithmText(algCtrl.getAlgorithmText((String)cmbAlgorithms.getSelectedItem()));
 		cmbAlgorithms.setEditable(false);
+		cmbAlgorithms.setSelectedItem(0);
 	}
 	
 	private void constructAlgorithmText(JPanel panel) {
@@ -295,7 +295,7 @@ public class ControlsPanel  {
 	private void constructInstructionsButton(JPanel panel) {
 		JButton btnInstructions = new JButton(BTN_TXT_INST);
 		btnInstructions.setPreferredSize(new Dimension(btnInstructions.getWidth(), BUTTON_HEIGHT));
-		btnInstructions.addActionListener(controlsController);
+		btnInstructions.addActionListener(InstructionsControllerFactory.getInstance());
 		panel.add(btnInstructions,BorderLayout.SOUTH);
 		addComponentToMap(btnInstructions);
 	}

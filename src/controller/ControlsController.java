@@ -70,7 +70,7 @@ public class ControlsController implements ChangeListener, ActionListener {
 	public boolean loadControlsPanel(ControlsPanel panel) {
 		if(!controlsPanelSet) {
 			//this.controlsPanel  = panel;
-			this.algoCtrl = new AlgorithmSelectionController(panel);
+			//this.algoCtrl = new AlgorithmSelectionController(panel);
 			//this.pauseController = new PauseController(controller, panel);
 			return true;
 		}

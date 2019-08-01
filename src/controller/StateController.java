@@ -1,6 +1,8 @@
 package controller;
 
+import factories.AlgorithmSelectionControllerFactory;
 import factories.ClearControllerFactory;
+import factories.InstructionsControllerFactory;
 import factories.PauseControllerFactory;
 import factories.SAVControllerFactory;
 import factories.SpeedSliderControllerFactory;
@@ -49,6 +51,7 @@ public class StateController {
 	private ClearController clearController;
 	private AlgorithmSelectionController algorithmSelectionController;
 	private SAVController SAVcontroller;
+	private InstructionsController instructionsController;
 	
 	
 	public static final Integer PRE_SEARCH = 0;
@@ -97,6 +100,8 @@ public class StateController {
 		this.clearController = ClearControllerFactory.getInstance();
 		this.SAVcontroller = SAVControllerFactory.getInstance();
 		this.speedController = SpeedSliderControllerFactory.getInstance();
+		this.algorithmSelectionController = AlgorithmSelectionControllerFactory.getInstance();
+		this.instructionsController = InstructionsControllerFactory.getInstance();
 		setState(PRE_SEARCH);
 	}
 	// Method to set the state of the program to one of the 4 predefined states.
@@ -180,5 +185,9 @@ public class StateController {
 		
 		view.setRunState(false);
 		this.state = DRAW_PATH;
+	}
+	
+	public Integer getAlogrithmKey() {
+		return algorithmSelectionController.getAlgorithmKey();
 	}
 }

@@ -331,12 +331,14 @@ public class SAVModel {
 		}
 		//TODO make this method choose the algorithm based on the user selection
 		//TODO make this method set the time delay based on the view settings (eg. sliding scale)
-		UpdatingSearchAlgorithm algorithm = new DjirkstaSearchUpdating(graph); 
+		UpdatingSearchAlgorithm algorithm =  UpdatingSearchAlgorithm.newSearch(graph,stateController.getAlogrithmKey());
 		updater = new UpdateProcessor(this);
 		ArrayBlockingQueue<GraphUpdate> updateQueue = new ArrayBlockingQueue<>(1000);
 		algorithm.setUpdateQueue(updateQueue);
 		updater.setUpdateQueue(updateQueue, speedSetting);
 		runner = new RunSearchAlgorithm(updater,source, target, algorithm, graphLock,this);
+		
+		
 		
 		//begin the update processor thread on the EDT
 		updater.execute();

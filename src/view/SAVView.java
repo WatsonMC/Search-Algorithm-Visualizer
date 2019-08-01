@@ -63,7 +63,8 @@ public class SAVView{
 		
 		frame.add(controls, BorderLayout.LINE_START);
 		frame.setVisible(true);
-		frame.setLocationRelativeTo(null);
+//		frame.setLocationRelativeTo(null);
+		frame.setLocation(0, 0);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setResizable(false);
 		grid.setFocusable(true);
@@ -160,6 +161,14 @@ public class SAVView{
 	
 	public GridPanel getGrid() {
 		return this.grid;
+	}
+	
+	public JFrame getFrame() {
+		return this.frame;
+	}
+	
+	public void setAlgorithmDescription(String text) {
+		cp.updateAlgorithmText(text);
 	}
 	////TEST///////
 	public void testColourPallete() {

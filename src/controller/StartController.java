@@ -13,8 +13,6 @@ public class StartController implements ActionListener {
 	 * - Model 
 	 * 		-> changes run state
 	 * StateController
-
-
 	 */
 	
 	private SAVModel model;
